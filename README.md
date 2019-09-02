@@ -1,6 +1,6 @@
 # Howdy and Welcome to the Flapjack Flip!
 
-Visit [pancakes.hunter-martin.com](pancakes.hunter-martin.com), or follow the build instructions.
+Visit [pancakes.mhuntermartin.com](pancakes.mhuntermartin.com), or follow the build instructions.
 
 ***
 
