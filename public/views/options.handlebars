@@ -1,0 +1,164 @@
+<div id='options-screen'>
+    <h1 class='game-name'>Options</h1>
+    <div class='split-screen'>
+        <div class='left-side'>
+            <div>
+                <h2>Number of Pancakes: <span id='num-pancakes'></span></h2>
+                <input type="range" min="2" max="9" value="4" class="slider" id="pancakes-range">
+            </div>
+
+            <div>
+                <h2>AI Difficulty: <span id='difficulty'></span></h2>
+                <input type="range" min="1" max="4" value="1" class="slider" id="difficulty-range">
+            </div>
+
+            <div id='order'>
+
+            </div>
+            <button id='randomize-button' class='game-button'>Randomize</button>
+            <button id='continue-button' class='game-button'>Continue</button>
+            <div id='showHelp'> Click on & drag on a pancake to customize your stack. </div>
+        </div>
+        <div class='right-side'>
+            <h2>Pancake Order</h2>
+            <div id='pancake-order'></div>
+        </div>
+        <div class="object">
+            <img src="../images/mouse_click.png" width="55" height="55">
+        </div>
+    </div>
+
+    <script>
+        let pancakes = [];
+
+        $(document).ready(() => {
+
+            function isSorted(list) {
+                for(let i=1; i<list.length; i++) {
+                    if(list[i] < list[i-1]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            $.fn.randomize = function(a,b) {
+                return this.each(function() {
+                    var $this = $(this);
+                    var elems = $this.children(a).children(b);
+                    var len = $this.find(a).eq(0).find(b).length;
+
+                    elems.sort(function() { return (Math.round(Math.random())-0.5); });
+
+                    $this.detach(a);
+
+                    for(var i=0; i < elems.length; i++) {
+                        $this.find(a).eq(i%len).append(elems[i]);
+                    }
+
+                });
+            }
+
+            function updatePancakes(numPancakes) {
+                pancakes = [];
+                for(let i=1; i <= numPancakes; i++) {
+                    pancakes.push(i);
+                }
+            }
+
+            function updatePancakeSize() {
+                let pancakesDivs = $('#pancake-order').children();
+                let divWidth = $('#pancake-order').width();
+                pancakesDivs.each((ind, elem) => {
+                    let value = elem.innerText;
+                    $(`#${elem.id}`).width(divWidth*(Number(value)/10));
+                });
+            }
+
+            function createPancakeStack() {
+                $('#pancake-order').empty();
+                pancakes.forEach((value, index) => {
+                    let $newListItem = $( `<div id='pancake-${index}' class='pancake center-div pancake-hover'>${value}</div>`);
+                    $('#pancake-order').append($newListItem);
+                });
+
+                updatePancakeSize();
+
+                $("#pancake-order").sortable({
+                    animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+                    draggable: ".pancake", // Specifies which items inside the element should be sortable
+                    onUpdate: function (evt){
+                        var item = evt.item; // the current dragged HTMLElement
+                    }
+                });
+            }
+
+            function initializeSliders() {
+                let pancakeSlider = document.getElementById('pancakes-range');
+                let difficultySlider = document.getElementById('difficulty-range');
+                let pancakeValue = document.getElementById('num-pancakes');
+                let difficultyValue = document.getElementById('difficulty');
+
+                pancakeValue.innerHTML = pancakeSlider.value;
+                difficultyValue.innerHTML = difficultySlider.value;
+                updatePancakes(pancakeSlider.value);
+                createPancakeStack();
+
+                pancakeSlider.oninput = function() {
+                    pancakeValue.innerHTML = this.value;
+                    difficultySlider.max = this.value;
+                    if(difficultyValue.innerHTML > this.value) {
+                        difficultyValue.innerHTML = this.value;
+                    }
+                    updatePancakes(this.value);
+                    createPancakeStack();
+                };
+                difficultySlider.oninput = function() {
+                    difficultyValue.innerHTML = this.value;
+                };
+            }
+
+            function shufflePancakes() {
+                let pancakeList = $('#pancake-order');
+                let pancakeDivs = pancakeList.children();
+                while (pancakeDivs.length) {
+                    pancakeList.append(pancakeDivs.splice(Math.floor(Math.random() * pancakeDivs.length), 1)[0]);
+                }
+            }
+
+            function getPancakeList() {
+                let tempPancakes = $('#pancake-order').children();
+                tempPancakes = tempPancakes.map((ind, elem) => {
+                    return elem.innerText;
+                });
+                let returnPancakes = [];
+                $.each(tempPancakes, (k,v) => {
+                    returnPancakes.push(v);
+                })
+                return returnPancakes;
+            }
+
+            function continueListener() {
+                let diff = document.getElementById('difficulty-range').value;
+
+                if(!isSorted(getPancakeList())) {
+                    window.open(`{{ api_location }}/game?${$.param({
+                        difficulty: diff,
+                        pancakeOrder: getPancakeList()
+                    })}`,'_self');
+                } else {
+                    alert("Wow that was easy!  Your pancake stack to be unsorted before you start.");
+                }
+            }
+
+            function main() {
+                initializeSliders();
+
+                $('#continue-button').click(continueListener);
+                $('#randomize-button').click(shufflePancakes);
+            }
+
+            main();
+        });
+    </script>
+</div>

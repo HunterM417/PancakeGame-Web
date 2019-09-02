@@ -1,0 +1,44 @@
+<div id='game-over-page'>
+    <h1 class='game-name'>Game Over</h1>
+    <h2>You <span id='result'></span>!</h2>
+    <p>You ended up with a score of <span id='score'></span>!
+        <br>
+        <span class='game-text'>Player Name: </span><input id='username' class='game-input' type="text" maxlength="7" minlength="1">
+    </p>
+
+    <button class='game-button' id='continue-button'>Continue</button>
+
+    <script src='js/url_helper.js'></script>
+    <script>
+        let res = getUrlVars()['result'];
+        let score = getUrlVars()['score'];
+
+        $(document).ready(() => {
+			hashCode = function(s){
+				return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+			}
+
+            function continueListener() {
+                if($('#username').val()) {
+                    window.open(`{{ api_location }}/highscores?${$.param({
+                        username: $('#username').val(),
+                        score: score,
+						hash: hashCode(($('#username').val() + score))
+                    })}`,'_self');
+                } else {
+                    alert('Sorry! Please enter a username!');
+                }
+            }
+
+            function main() {
+                $('#result').html(res);
+                $('#score').html(score);
+                $('#continue-button').click(continueListener);
+
+                $('#username').focus();
+            }
+
+            main();
+        });
+    </script>
+</div>

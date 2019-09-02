@@ -1,0 +1,180 @@
+<div id='game-page'>
+    <div class='split-screen'>
+        <div class='left-side'>
+            <h2>Your Stack</h2>
+            <div id='player-stack'>
+
+            </div>
+        </div>
+        <div class='right-side'>
+            <h2>AI Stack</h2>
+            <div id='ai-stack'>
+
+            </div>
+        </div>
+    </div>
+    <div id="ai-notice">AI is computing. Please wait...</div>
+    <div>Turn: <span id='turn-number'></span></div>
+
+    <script src='js/url_helper.js'></script>
+    <script>
+        $('#ai-notice').hide();
+        let difficulty = Number(getUrlVars()['difficulty']);
+        var ty = new Int32Array([9,8,7,2,5,4,6,3,1]);
+        Module = {
+            onRuntimeInitialized: function() {
+                console.log('WASM IS READY');
+            }
+        };
+        let playerStack = getUrlVars()['pancakeOrder'];
+        let aiStack = getUrlVars()['pancakeOrder'];
+        let turnNumber = 1;
+
+        var TOP_SPACING = 100;
+        var PANCAKE_HEIGHT = 40;
+        var PANCAKE_GAP = 32;
+
+        $(document).ready(() => {
+
+
+            function isSorted(list) {
+                for(let i=1; i<list.length; i++) {
+                    if(list[i] < list[i-1]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function gameOver() {
+                return isSorted(playerStack) || isSorted(aiStack);
+            }
+
+            function gameResult() {
+                if(isSorted(playerStack) && isSorted(aiStack))
+                    return "Tied";
+                else if(isSorted(playerStack))
+                    return "Won";
+                else 
+                    return "Lost";
+            }
+
+            function scoreGame() {
+                // compute the score for the game and return it
+                let score = 0;
+                if(isSorted(playerStack) && isSorted(aiStack)) {
+                    score = playerStack.length * (difficulty+1);
+                } else if(isSorted(playerStack)){
+                    score = 2 * playerStack.length * (difficulty+1);
+                } else {
+                    score = playerStack.length;
+                }
+                return score;
+            }
+
+            function nextPage() {
+                window.open(`{{ api_location }}/gameover?${$.param({
+                    score: scoreGame(),
+                    result: gameResult()
+                })}`,'_self');
+            }
+
+            function updatePancakeSize(stackId) {
+                let pancakesDivs = $(`#${stackId}`).children();
+                let divWidth = $(`#${stackId}`).width();
+                pancakesDivs.each((ind, elem) => {
+                    let value = elem.innerText;
+                    $(`#${elem.id}`).width(divWidth*(Number(value)/10));
+                });
+            }
+
+            function flipPancakes(pancakeList, index, stackId) {
+                let flippingValues = pancakeList.slice(0, index+1);
+                let constantValues = pancakeList.slice(index+1, pancakeList.length);
+                let newList = flippingValues.reverse().concat(constantValues);
+                newList.forEach((value, ind) => {
+                    $(`#pancake-${stackId}-${value}`).css({top: (ind*(PANCAKE_HEIGHT+PANCAKE_GAP))+TOP_SPACING });
+                });
+                return newList;
+            }
+
+            function addPlayerClickListeners() {
+                for(let p of playerStack) {
+                    $(`#pancake-player-stack-${p}`).click(function (){
+                        playerPancakeClickListener(p);
+                    });
+                }
+            }
+
+            function removePlayerClickListeners() {
+                $('#ai-notice').show();
+                for(let p of playerStack) {
+                    $(`#pancake-player-stack-${p}`).off('click');
+                }
+            }
+
+            function playAiMove() {
+                //let randInd = Math.floor(Math.random()*playerStack.length);
+                //randInd = randInd == 0 ? 1 : randInd;
+                console.log(aiStack);
+                aiStack.forEach(function(x,y,z){ z[y]=x|0 });
+                console.log(aiStack);
+                converted32Array = new Int32Array(aiStack);
+                var rfi = Module.returnIndexFlip(converted32Array, difficulty);
+                console.log(rfi);
+                aiStack = flipPancakes(aiStack, rfi, 'ai-stack');
+                if(gameOver()) {
+                    setTimeout(nextPage, 750);
+                } else {
+                    turnNumber++;
+                    $('#turn-number').text(turnNumber);
+                    $('#ai-notice').hide();
+                    addPlayerClickListeners();
+                }
+            }
+
+            function playerPancakeClickListener(value) {
+                let flipInd = playerStack.indexOf(value);
+                if(flipInd != 0) {
+                    playerStack = flipPancakes(playerStack, flipInd, 'player-stack');
+                    removePlayerClickListeners();
+                    setTimeout(playAiMove, 1000);
+                } else {
+                    alert('Invalid Move');
+                }
+            }
+
+            function createPancakeStacks(stackId, pancakeList) {
+                $(`#${stackId}`).empty();
+                pancakeList.forEach((value, index) => {
+                    let $newListItem = $( `<div id='pancake-${stackId}-${value}' class='pancake center-div ${stackId === 'player-stack' ? 'player-button': ''}'>${value}</div>`);
+                    $newListItem.css({
+                        position: 'absolute',
+                        height: PANCAKE_HEIGHT,
+                        top: (index*(PANCAKE_HEIGHT+PANCAKE_GAP))+TOP_SPACING,
+                        left: 0,
+                        right: 0,
+                        transition: 'top .5s'
+                    });
+                    if(stackId === 'player-stack')
+                        $newListItem.click(function (){
+                            playerPancakeClickListener(value);
+                        });
+                    $(`#${stackId}`).append($newListItem);
+                });
+
+                updatePancakeSize(stackId);
+            }
+
+            function main() {
+                createPancakeStacks('player-stack', playerStack);
+                createPancakeStacks('ai-stack', aiStack);
+                $('#turn-number').text(turnNumber);
+            }
+
+            main();
+
+        });
+    </script>
+    <script src='libs/return_index.js'></script>
+</div>

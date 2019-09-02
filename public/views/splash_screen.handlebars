@@ -1,0 +1,27 @@
+<div id='splash-screen'>
+    <h1 class='game-name'>The Flapjack Flip!</h1>
+    <p>by Hunter Martin, Vishaal Makani, Jason Kolodziej, Rahul Kumar, Duy Le, and Thomas McDonald</p>
+
+    {{!-- <p id='continue-prompt'>Please press ENTER to continue</p> --}}
+    <button id='play-button' class='game-button'>Play</button>
+    <br><br>
+    <button id='return-button' class='game-button'>Return to Hunter-Martin.com</button>
+
+    <script>
+        $(document).ready(() => {
+            function continueListener() {
+                window.open('{{ api_location }}/instructions','_self');
+            }
+
+            function returnToHomeListener() {
+                window.open(`https://hunter-martin.com/`,'_self');
+            }
+
+            function main() {
+                $('#play-button').click(continueListener);
+                $('#return-button').click(returnToHomeListener);
+            }
+            main();
+        });
+    </script>
+</div>

@@ -1,0 +1,288 @@
+*:not(input) {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#ai-notice {
+    animation: pulsate 3s infinite ease-out;
+    bottom: 10px;
+    position: relative;
+}
+@-webkit-keyframes pulsate {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1.0;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+
+#showHelp {
+    font-family: 'Fira Sans', sans-serif;
+    bottom: -10px;
+    position: relative;
+    animation: cssAnimation 5s forwards 5s;
+    visibility: hidden;
+  }
+
+  @keyframes cssAnimation {
+    to   { visibility: visible; }
+  }
+.object {
+    animation: MoveUpDown 5s linear 5s;
+    position: relative;
+    left: -150px;
+    bottom: 300px;
+  }
+
+  @keyframes MoveUpDown {
+    0%, 100% {
+      bottom: -300px;
+    }
+    50% {
+      bottom: -100px;
+    }
+  }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Fira Sans', sans-serif;
+    color: #8a380f;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-image: url('../../images/pancakes.png'), linear-gradient(#490400, #d17221);
+    font-size: 20px;
+}
+
+header, footer {
+    flex: none;
+}
+
+header {
+    display: inline-block;
+    margin: 0;
+    width: 100vw;
+    height: 50px;
+    text-align: center;
+}
+
+footer {
+    width: 100vw;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    vertical-align: middle;
+    color: white;
+}
+
+#main-content {
+    padding: 0 12px;
+    margin: 0 auto;
+    flex: auto;
+    background: #fce7ab;
+    width: 75%;
+    -webkit-box-shadow: 3px 4px 14px -1px #490400;
+    -moz-box-shadow: 3px 4px 14px -1px #490400;
+    box-shadow: 3px 4px 14px -1px #490400;
+    border-radius: 10px;
+}
+
+.game-name {
+    font-family: 'Lobster', cursive;
+    font-size: 50px;
+}
+
+.game-text {
+    font-family: 'Lobster', cursive;
+    font-size: 25px;
+}
+
+.game-button, .game-input {
+    font-family: 'Lobster', cursive;
+    font-size: 18px;
+    padding: 12px;
+    text-align: center;
+    border-radius: 4px;
+    border-color: brown;
+}
+
+.game-button:hover {
+    -webkit-box-shadow: 3px 4px 14px -1px #490400;
+    -moz-box-shadow: 3px 4px 14px -1px #490400;
+    box-shadow: 3px 4px 14px -1px #490400;
+}
+
+.game-input {
+    margin: 12px;
+}
+
+.split-screen {
+    display: flex;
+    flex-direction: row;
+}
+
+.left-side, .right-side{
+    flex-grow: 1;
+    flex-basis: 100%;
+    position: relative;
+}
+
+/* .right-side {
+    flex-grow: 1;
+} */
+
+.center-div {
+    margin: 0 auto;
+}
+
+.pancake {
+    position: relative;
+    padding: 12px;
+    background: #d1914d;
+    border: 1px #c26129 solid;
+    color: #fce7ab;
+    font-family: 'Lobster', cursive;
+    font-size: 25px;
+    z-index: 0;
+    border-radius: 12px;
+}
+
+/* Splash Screen */
+
+#splash-screen {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#continue-prompt {
+    width: 100%;
+    position: absolute;
+    bottom: 20%;
+}
+
+#play-button {
+    margin-top: 200px;
+    margin-bottom: 10px;
+}
+
+/* Instructions */
+
+#instructions-page {
+    text-align: center;
+}
+
+.instruction-img {
+    width: 15vw;
+}
+
+#instruction-arrow {
+    width: 10vw;
+}
+
+#instruction-imgs {
+    height: 10%;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Options */
+
+#options-screen {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.slider {
+    width: 50%;
+    height: 25px;
+    appearance: none;
+    outline: none;
+    background: #d1914dd0;
+    border-radius: 8px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #fce7ab;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #fce7ab;
+    cursor: pointer;
+}
+
+#continue-button {
+    margin-top: 24px;
+    margin-bottom: 10px;
+}
+
+/* Game */
+
+#game-page {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.player-button:hover, .pancake-hover:hover {
+    background: #c26129;
+    border: 1px #d1914d solid;
+    -webkit-box-shadow: 3px 4px 14px -1px rgba(73, 4, 0, 0.5);
+    -moz-box-shadow: 3px 4px 14px -1px rgba(73,4,0, 0.5);
+    box-shadow: 3px 4px 14px -1px rgba(73,4,0, 0.5);
+    transition: box-shadow .2s;
+    z-index: 99 !important;
+}
+
+/* Game Over Page */
+
+#game-over-page {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#username {
+    width: 100px;
+}
+
+/*high-scores page*/
+
+.highscores-text{
+	font-family: 'Lobster', cursive;
+    font-size: 24px;
+	text-align: center;
+	margin: 10px;
+	margin-bottom: 80px;
+}

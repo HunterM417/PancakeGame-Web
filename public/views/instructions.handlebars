@@ -1,0 +1,35 @@
+<div id='instructions-page'>
+    <h1 class='game-name'>Instructions</h1>
+    <p>Click the pancake you want to flip. The goal is to have a sorted stack of pancakes.</p>
+     <p>A sorted stack of pancakes means having the smallest pancake on the top.</p>
+    <p>You will be taking turns against an Artificial Intelligence (AI) system that will also be making moves on its own stack
+        of pancakes.</p> 
+        <p>You will be able to decide the difficulty of the AI on the Options page.</p>
+
+    <h3>Controlling the game</h3>
+    <body>You will be able to click on the pancake you want to flip from and the pancake you clicked and the ones above will be swapped into a flipped order.</body>
+       <p>An example is shown below:</p>
+
+    <div class='split-screen' id='instruction-imgs'>
+        <img src='images/before-flip.png' alt='Before flip' class='instruction-img'>
+        <img src='images/rightarrow.png' alt='right arrow' class='instruction-img' id='instruction-arrow'>
+        <img src='images/after-flip.png' alt='After flip' class='instruction-img'>
+    </div>
+
+    <button id='continue-button' class='game-button'>Continue</button>
+
+    <script>
+        $(document).ready(() => {
+            function continueListener() {
+                window.open(`{{ api_location }}/options`,'_self');
+            }
+
+    function main() {
+        $('#continue-button').click(continueListener);
+    }
+
+    main();
+        
+	});
+    </script>
+</div>
